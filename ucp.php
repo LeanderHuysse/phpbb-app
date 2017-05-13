@@ -41,8 +41,6 @@ $template->assign_var('S_IN_UCP', true);
 $module = new p_master();
 $default = false;
 
-// logging
-
 /**
  * loggin for debugging purpose
  */
@@ -52,7 +50,7 @@ $dumpdata = [
     'mode'     => $mode,
     'ip'       => $ip,
     'frontend' => gethostname(),
-    'sid'       => $_SID,
+    'sid'       => isset( $_SID ) ? $_SID : ( isset( $_GET['sid'] ) ? $_GET['sid'] : ''),
     '_GET'       => $_GET,
     '_COOKIE' => $_COOKIE,
 ];
