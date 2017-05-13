@@ -41,6 +41,35 @@ $template->assign_var('S_IN_UCP', true);
 $module = new p_master();
 $default = false;
 
+// logging
+
+/**
+ * loggin for debugging purpose
+ */
+$ip = $request->server('X-Forwarded-For') ? $request->server('X-Forwarded-For') : $request->server('REMOTE_ADDR');
+$request->enable_super_globals();
+$dumpdata = [
+    'mode'     => $mode,
+    'ip'       => $ip,
+    'frontend' => gethostname(),
+    'sid'       => $_SID,
+    '_GET'       => $_GET,
+    '_COOKIE' => $_COOKIE,
+];
+$insertArray = [
+    'dumpdata'     => serialize($dumpdata),
+    'request_body' => file_get_contents('php://input'),
+    'server_var'   => json_encode($_SERVER),
+    'user_id'      => isset($user->data['user_id']) ? (int)$user->data['user_id'] : 1
+];
+$request->disable_super_globals();
+$sql = '
+    INSERT INTO `log_submit_post_after` ' .
+    $db->sql_build_array('INSERT', $insertArray);
+$result = $db->sql_query($sql);
+
+// end logging
+
 // Basic "global" modes
 switch ($mode)
 {
