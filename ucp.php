@@ -54,12 +54,21 @@ $dumpdata = [
     '_GET'       => $_GET,
     '_COOKIE' => $_COOKIE,
 ];
+
+$request_body = array(
+	'username' => isset( $_REQUEST['username'] ) ? $_REQUEST['username'] : '',
+	'sid' => isset( $_POST['sid'] ) ? $_POST['sid'] : '',
+	'sid_get' => isset( $_GET['sid'] ) ? $_GET['sid'] : '',
+	'sid_global' => isset( $_SID ) ? $_SID : '',
+);
+
 $insertArray = [
     'dumpdata'     => serialize($dumpdata),
-    'request_body' => file_get_contents('php://input'),
+    'request_body' => json_encode($request_body),
     'server_var'   => json_encode($_SERVER),
     'user_id'      => isset($user->data['user_id']) ? (int)$user->data['user_id'] : 1
 ];
+
 $request->disable_super_globals();
 $sql = '
     INSERT INTO `log_submit_post_after` ' .
